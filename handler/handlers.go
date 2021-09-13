@@ -5,9 +5,9 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	configs "github.com/joaomarcuslf/go-go-url-shortener/configs"
-	encoders "github.com/joaomarcuslf/go-go-url-shortener/encoders"
-	store "github.com/joaomarcuslf/go-go-url-shortener/store"
+	configs "github.com/joaomarcuslf/go-go-url-go/configs"
+	encoders "github.com/joaomarcuslf/go-go-url-go/encoders"
+	store "github.com/joaomarcuslf/go-go-url-go/store"
 )
 
 type UrlCreationRequest struct {

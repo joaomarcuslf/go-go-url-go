@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"testing"
 
-	configs "github.com/joaomarcuslf/go-go-url-shortener/configs"
-	store "github.com/joaomarcuslf/go-go-url-shortener/store"
+	configs "github.com/joaomarcuslf/go-go-url-go/configs"
+	store "github.com/joaomarcuslf/go-go-url-go/store"
 	"github.com/stretchr/testify/assert"
 
 	"github.com/joho/godotenv"

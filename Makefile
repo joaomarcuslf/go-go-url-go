@@ -28,3 +28,4 @@ docker-stop:
 deploy:
 	git tag -a v$(version) -m "v$(version)"
 	gcloud app deploy app.yaml -v v$(version)
+	git push --tags

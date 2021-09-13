@@ -5,9 +5,9 @@ import (
 	"log"
 
 	"github.com/gin-gonic/gin"
-	configs "github.com/joaomarcuslf/go-go-url-shortener/configs"
-	handler "github.com/joaomarcuslf/go-go-url-shortener/handler"
-	store "github.com/joaomarcuslf/go-go-url-shortener/store"
+	configs "github.com/joaomarcuslf/go-go-url-go/configs"
+	handler "github.com/joaomarcuslf/go-go-url-go/handler"
+	store "github.com/joaomarcuslf/go-go-url-go/store"
 	"github.com/joho/godotenv"
 )
 

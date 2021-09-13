@@ -3,7 +3,7 @@ package encoders_test
 import (
 	"testing"
 
-	encoders "github.com/joaomarcuslf/go-go-url-shortener/encoders"
+	encoders "github.com/joaomarcuslf/go-go-url-go/encoders"
 
 	"github.com/stretchr/testify/assert"
 )

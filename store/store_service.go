@@ -6,7 +6,7 @@ import (
 
 	"github.com/go-redis/redis"
 
-	configs "github.com/joaomarcuslf/go-go-url-shortener/configs"
+	configs "github.com/joaomarcuslf/go-go-url-go/configs"
 )
 
 type StorageService struct {
