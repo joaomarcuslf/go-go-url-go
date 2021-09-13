@@ -5,7 +5,7 @@ import (
 	"log"
 
 	"github.com/gin-gonic/gin"
-	configs "github.com/joaomarcuslf/go-url-shortener/configs"
+	configs "github.com/joaomarcuslf/go-go-url-shortener/configs"
 )
 
 func main() {

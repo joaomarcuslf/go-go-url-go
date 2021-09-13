@@ -1,4 +1,4 @@
-module github.com/joaomarcuslf/go-url-shortener
+module github.com/joaomarcuslf/go-go-url-shortener
 
 go 1.17
 
