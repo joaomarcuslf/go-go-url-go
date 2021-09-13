@@ -11,28 +11,18 @@ import (
 func init() {
 }
 
-func TestBase62Encode(t *testing.T) {
-	key := uint64(5577006791947779410)
+func TestEncode01(t *testing.T) {
+	key := "joaomarcuslf"
 
 	result := encoders.Encode(key)
 
-	assert.True(t, result == "OTv0FdGU8Ng")
+	assert.True(t, result == "Ru4GBDi3")
 }
 
-func TestBase62Decode01(t *testing.T) {
-	key := "OTv0FdGU8Ng"
+func TestEncode02(t *testing.T) {
+	key := "joaomarcuslf1"
 
-	result, err := encoders.Decode(key)
+	result := encoders.Encode(key)
 
-	assert.True(t, result == uint64(5577006791947779410))
-	assert.True(t, err == nil)
-}
-
-func TestBase62Decode02(t *testing.T) {
-	key := "OTv0FdGdfsU8Ng"
-
-	result, err := encoders.Decode(key)
-
-	assert.True(t, result != uint64(5577006791947779410))
-	assert.True(t, err == nil)
+	assert.True(t, result != "Ru4GBDi3")
 }
