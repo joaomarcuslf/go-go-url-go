@@ -1,0 +1,48 @@
+name: go
+
+on:
+  push:
+    branches:
+      - main
+      - master
+      - develop
+  pull_request:
+    branches:
+      - main
+      - master
+      - develop
+
+jobs:
+  ci:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        go: [ '1.16' ]
+
+    steps:
+      - name: Checkout 🛎
+        uses: actions/checkout@master
+
+      - name: Setup Go env 🏗
+        uses: actions/setup-go@v2
+        with:
+          go-version: ${{ matrix.go }}
+
+      - name: Install dependencies 👨🏻‍💻
+        run: |
+          go mod download
+
+      - name: Run app 👀
+        run: |
+          make build
+
+      - name: Run tests 🧪
+        run: |
+          make test
+
+      - name: Stop containers 🐳
+        if: always()
+        run: docker-compose -f "docker-compose.yml" down
+

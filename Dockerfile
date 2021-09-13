@@ -2,7 +2,7 @@ FROM cosmtrek/air
 
 WORKDIR /usr/app
 
-COPY go.mod ./
+COPY go.mod /usr/app/go.mod
 
 RUN go mod download
 
