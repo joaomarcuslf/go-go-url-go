@@ -26,13 +26,7 @@ func CreateShortUrl(c *gin.Context, serverConfig *configs.Server, optionsConfig 
 
 	store.SaveUrlMapping(shortUrl, creationRequest.LongUrl)
 
-	host := ""
-
-	if serverConfig.Port == "80" {
-		host = fmt.Sprintf("%s://%s/%s", optionsConfig.Schema, optionsConfig.Prefix, shortUrl)
-	} else {
-		host = fmt.Sprintf("%s://%s:%s/%s", optionsConfig.Schema, optionsConfig.Prefix, serverConfig.Port, shortUrl)
-	}
+	host := fmt.Sprintf("%s://%s/%s", optionsConfig.Schema, optionsConfig.Prefix, shortUrl)
 
 	c.JSON(200, gin.H{
 		"message":   "short url created successfully",
@@ -42,6 +36,13 @@ func CreateShortUrl(c *gin.Context, serverConfig *configs.Server, optionsConfig 
 
 func HandleShortUrlRedirect(c *gin.Context) {
 	shortUrl := c.Param("shortUrl")
-	initialUrl, _ := store.RetrieveInitialUrl(shortUrl)
-	c.Redirect(302, initialUrl)
+
+	initialUrl, err := store.RetrieveInitialUrl(shortUrl)
+
+	if initialUrl == "" || err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "url not found"})
+		return
+	}
+
+	c.Redirect(302, initialUrl+"?source=go-go-url-go")
 }
