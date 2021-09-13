@@ -37,7 +37,7 @@ make deploy version=4
 <table>
   <tr>
     <td align="center">
-      <a href="https://github.com/marcellevargas">
+      <a href="https://github.com/joaomarcuslf">
         <img src="https://avatars.githubusercontent.com/u/53450523?v=4" width="100px;" alt="Joaomarcuslf's Github picture"/><br>
         <sub>
           <b>joaomarcuslf</b>
