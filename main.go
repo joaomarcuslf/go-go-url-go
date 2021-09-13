@@ -8,9 +8,11 @@ import (
 	configs "github.com/joaomarcuslf/go-go-url-shortener/configs"
 	handler "github.com/joaomarcuslf/go-go-url-shortener/handler"
 	store "github.com/joaomarcuslf/go-go-url-shortener/store"
+	"github.com/joho/godotenv"
 )
 
 func main() {
+	_ = godotenv.Load("./.env")
 	configuration, err := configs.FromEnv()
 
 	if err != nil {

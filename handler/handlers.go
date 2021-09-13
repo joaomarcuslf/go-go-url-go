@@ -26,13 +26,13 @@ func CreateShortUrl(c *gin.Context, serverConfig *configs.Server, optionsConfig 
 
 	store.SaveUrlMapping(shortUrl, creationRequest.LongUrl)
 
-	host := fmt.Sprintf(
-		"%s://%s:%s/%s",
-		optionsConfig.Schema,
-		optionsConfig.Prefix,
-		serverConfig.Port,
-		shortUrl,
-	)
+	host := ""
+
+	if serverConfig.Port == "80" {
+		host = fmt.Sprintf("%s://%s/%s", optionsConfig.Schema, optionsConfig.Prefix, shortUrl)
+	} else {
+		host = fmt.Sprintf("%s://%s:%s/%s", optionsConfig.Schema, optionsConfig.Prefix, serverConfig.Port, shortUrl)
+	}
 
 	c.JSON(200, gin.H{
 		"message":   "short url created successfully",
