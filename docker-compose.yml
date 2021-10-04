@@ -12,12 +12,12 @@ services:
       - "80:80"
     env_file:
       - ./.env
-    depends_on:
-      - redis
-    environment:
-      REDIS_HOST: redis
+    # depends_on:
+    #   - redis
+    # environment:
+    #   REDIS_HOST: redis
 
-  redis:
-    image: "redis:alpine"
-    ports:
-      - 6379:6379
+  # redis:
+  #   image: "redis:alpine"
+  #   ports:
+  #     - 6379:6379
