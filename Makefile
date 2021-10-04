@@ -40,6 +40,7 @@ deploy:
 clean:
 	rm -rf $(DOCKER_BUILD)
 
-heroku: $(DOCKER_CMD)
+deploy: $(DOCKER_CMD)
 	git tag -a v$(version) -m "v$(version)"
-	heroku container:push web
+	git push --tags
+	git push heroku main
