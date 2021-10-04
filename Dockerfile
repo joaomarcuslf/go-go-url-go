@@ -1,39 +1,21 @@
-# syntax=docker/dockerfile:1
+FROM heroku/heroku:18-build as build
 
-##
-## Build
-##
-FROM golang:1.16-buster AS build
-
+COPY . /app
 WORKDIR /app
 
-COPY go.mod ./
-COPY go.sum ./
+# Setup buildpack
+RUN mkdir -p /tmp/buildpack/heroku/go /tmp/build_cache /tmp/env
+RUN curl https://codon-buildpacks.s3.amazonaws.com/buildpacks/heroku/go.tgz | tar xz -C /tmp/buildpack/heroku/go
 
-COPY .env ./
+#Execute Buildpack
+RUN STACK=heroku-18 /tmp/buildpack/heroku/go/bin/compile /app /tmp/build_cache /tmp/env
 
-RUN go mod download
+# Prepare final, minimal image
+FROM heroku/heroku:18
 
-COPY main.go ./
-COPY configs ./configs
-COPY encoders ./encoders
-COPY store ./store
-COPY handler ./handler
-
-RUN go build -o /go-go-url-go
-
-FROM ubuntu:18.04 AS run
-
-WORKDIR /
-
-RUN apt-get update && apt-get -y install redis-server
-
-EXPOSE 80
-
-COPY scripts/run.sh ./
-
-COPY --from=build /go-go-url-go /go-go-url-go
-COPY --from=build /app/.env /.env
-
-
-CMD sh /run.sh
+COPY --from=build /app /app
+ENV HOME /app
+WORKDIR /app
+RUN useradd -m heroku
+USER heroku
+CMD /app/bin/go-go-url-go
