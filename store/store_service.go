@@ -32,7 +32,7 @@ func InitializeStore(redisConfig *configs.Redis) (*StorageService, error) {
 		return nil, fmt.Errorf("Error init Redis: %v", err)
 	}
 
-	fmt.Printf("\nRedis started successfully: pong message = {%s}", pong)
+	fmt.Printf("\nRedis started successfully: pong message = {%s}\n", pong)
 
 	storeService.RedisClient = redisClient
 

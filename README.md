@@ -26,7 +26,7 @@ make test
 
 ## Deploying
 
-Make sure you have `gcloud`in you `path`, and access to the project.
+Make sure you have `heroku cli`in you `path`, and access to the project.
 
 ```sh
 make deploy version=4

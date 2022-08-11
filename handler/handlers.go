@@ -11,23 +11,41 @@ import (
 	store "github.com/joaomarcuslf/go-go-url-go/store"
 )
 
-type UrlCreationRequest struct {
-	LongUrl string `json:"long_url" binding:"required"`
+func formatUrl(optionsConfig *configs.Options, shortUrl string) string {
+	return fmt.Sprintf("%s://%s/%s", optionsConfig.Schema, optionsConfig.Prefix, shortUrl)
 }
 
-func CreateShortUrl(c *gin.Context, serverConfig *configs.Server, optionsConfig *configs.Options) {
-	var creationRequest UrlCreationRequest
+func internalSaveFunction(shortUrl, longUrl string, optionsConfig *configs.Options) (string, error) {
+	err := store.SaveUrlMapping(shortUrl, longUrl)
 
-	if err := c.ShouldBindJSON(&creationRequest); err != nil {
+	if err != nil {
+		return "", err
+	}
+
+	host := formatUrl(optionsConfig, shortUrl)
+
+	return host, nil
+}
+
+type URLRequest struct {
+	LongUrl   string `json:"long_url" binding:"required"`
+	CustomUrl string `json:"custom_url" binding:"required"`
+}
+
+func CreateShortUrl(c *gin.Context, optionsConfig *configs.Options) {
+	var requestBody URLRequest
+
+	if err := c.ShouldBindJSON(&requestBody); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	shortUrl := encoders.Encode(creationRequest.LongUrl)
+	host, err := internalSaveFunction(encoders.Encode(requestBody.LongUrl), requestBody.LongUrl, optionsConfig)
 
-	store.SaveUrlMapping(shortUrl, creationRequest.LongUrl)
-
-	host := fmt.Sprintf("%s://%s/%s", optionsConfig.Schema, optionsConfig.Prefix, shortUrl)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
 	c.JSON(200, gin.H{
 		"message":   "short url created successfully",
@@ -35,27 +53,44 @@ func CreateShortUrl(c *gin.Context, serverConfig *configs.Server, optionsConfig 
 	})
 }
 
-type CustomUrlCreationRequest struct {
-	LongUrl   string `json:"long_url" binding:"required"`
-	CustomUrl string `json:"custom_url" binding:"required"`
-}
+func CreateCustomUrl(c *gin.Context, optionsConfig *configs.Options) {
+	var requestBody URLRequest
 
-func CreateCustomUrl(c *gin.Context, serverConfig *configs.Server, optionsConfig *configs.Options) {
-	var creationRequest CustomUrlCreationRequest
-
-	if err := c.ShouldBindJSON(&creationRequest); err != nil {
+	if err := c.ShouldBindJSON(&requestBody); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	shortUrl := creationRequest.CustomUrl
+	host, err := internalSaveFunction(requestBody.CustomUrl, requestBody.LongUrl, optionsConfig)
 
-	store.SaveUrlMapping(shortUrl, creationRequest.LongUrl)
-
-	host := fmt.Sprintf("%s://%s/%s", optionsConfig.Schema, optionsConfig.Prefix, shortUrl)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
 	c.JSON(200, gin.H{
-		"message":   "short url created successfully",
+		"message":   "Custom url created successfully",
+		"short_url": host,
+	})
+}
+
+func UpdateCustomUrl(c *gin.Context, optionsConfig *configs.Options) {
+	var requestBody URLRequest
+
+	if err := c.ShouldBindJSON(&requestBody); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	host, err := internalSaveFunction(c.Param("shortUrl"), requestBody.LongUrl, optionsConfig)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(200, gin.H{
+		"message":   "Custom url created successfully",
 		"short_url": host,
 	})
 }
@@ -69,8 +104,6 @@ func HandleShortUrlRedirect(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"error": "url not found"})
 		return
 	}
-
-	// Check if URL contains ? and if so, add a & to the end of the URL
 
 	if strings.Contains(initialUrl, "?") {
 		initialUrl += "&"

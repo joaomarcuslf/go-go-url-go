@@ -29,16 +29,20 @@ func main() {
 		})
 	})
 
-	r.POST("/create-short-url", func(c *gin.Context) {
-		handler.CreateShortUrl(c, &configuration.Server, &configuration.Options)
+	r.POST("/short-url", func(c *gin.Context) {
+		handler.CreateShortUrl(c, &configuration.Options)
 	})
 
-	r.POST("/create-custom-url", func(c *gin.Context) {
-		handler.CreateCustomUrl(c, &configuration.Server, &configuration.Options)
+	r.POST("/custom-url", func(c *gin.Context) {
+		handler.CreateCustomUrl(c, &configuration.Options)
 	})
 
 	r.GET("/:shortUrl", func(c *gin.Context) {
 		handler.HandleShortUrlRedirect(c)
+	})
+
+	r.PUT("/:shortUrl", func(c *gin.Context) {
+		handler.UpdateCustomUrl(c, &configuration.Options)
 	})
 
 	_, err = store.InitializeStore(&configuration.Redis)
@@ -47,11 +51,11 @@ func main() {
 		panic(err)
 	}
 
+	fmt.Println("Go Go, URL Go Starting Now! 🚀")
+
 	err = r.Run(fmt.Sprintf(":%s", configuration.Server.Port))
 
 	if err != nil {
 		panic(fmt.Sprintf("Failed to start the web server\n    Error: %v", err))
 	}
-
-	fmt.Println("Go Go, URL Go Started!🚀")
 }
