@@ -33,6 +33,10 @@ func main() {
 		handler.CreateShortUrl(c, &configuration.Server, &configuration.Options)
 	})
 
+	r.POST("/create-custom-url", func(c *gin.Context) {
+		handler.CreateCustomUrl(c, &configuration.Server, &configuration.Options)
+	})
+
 	r.GET("/:shortUrl", func(c *gin.Context) {
 		handler.HandleShortUrlRedirect(c)
 	})

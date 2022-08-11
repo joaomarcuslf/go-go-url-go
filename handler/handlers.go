@@ -34,6 +34,31 @@ func CreateShortUrl(c *gin.Context, serverConfig *configs.Server, optionsConfig 
 	})
 }
 
+type CustomUrlCreationRequest struct {
+	LongUrl   string `json:"long_url" binding:"required"`
+	CustomUrl string `json:"custom_url" binding:"required"`
+}
+
+func CreateCustomUrl(c *gin.Context, serverConfig *configs.Server, optionsConfig *configs.Options) {
+	var creationRequest CustomUrlCreationRequest
+
+	if err := c.ShouldBindJSON(&creationRequest); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	shortUrl := creationRequest.CustomUrl
+
+	store.SaveUrlMapping(shortUrl, creationRequest.LongUrl)
+
+	host := fmt.Sprintf("%s://%s/%s", optionsConfig.Schema, optionsConfig.Prefix, shortUrl)
+
+	c.JSON(200, gin.H{
+		"message":   "short url created successfully",
+		"short_url": host,
+	})
+}
+
 func HandleShortUrlRedirect(c *gin.Context) {
 	shortUrl := c.Param("shortUrl")
 
