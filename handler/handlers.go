@@ -3,6 +3,7 @@ package handler
 import (
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	configs "github.com/joaomarcuslf/go-go-url-go/configs"
@@ -69,5 +70,13 @@ func HandleShortUrlRedirect(c *gin.Context) {
 		return
 	}
 
-	c.Redirect(302, initialUrl+"?source=go-go-url-go")
+	// Check if URL contains ? and if so, add a & to the end of the URL
+
+	if strings.Contains(initialUrl, "?") {
+		initialUrl += "&"
+	} else {
+		initialUrl += "?"
+	}
+
+	c.Redirect(302, initialUrl+"source=go-go-url-go")
 }
