@@ -55,6 +55,22 @@ func SaveUrlMapping(shortUrl string, originalUrl string) error {
 	return nil
 }
 
+func UpdateUrlMapping(shortUrl string, originalUrl string) error {
+	_, err := storeService.RedisClient.Get(shortUrl).Result()
+
+	if err != nil {
+		return fmt.Errorf("Key doesn't exist | Error: %v - shortUrl: %s - originalUrl: %s\n", err, shortUrl, originalUrl)
+	}
+
+	err = storeService.RedisClient.Set(shortUrl, originalUrl, CacheDuration).Err()
+
+	if err != nil {
+		return fmt.Errorf("Failed saving key url | Error: %v - shortUrl: %s - originalUrl: %s\n", err, shortUrl, originalUrl)
+	}
+
+	return nil
+}
+
 func RetrieveInitialUrl(shortUrl string) (string, error) {
 	result, err := storeService.RedisClient.Get(shortUrl).Result()
 

@@ -82,7 +82,17 @@ func UpdateCustomUrl(c *gin.Context, optionsConfig *configs.Options) {
 		return
 	}
 
-	host, err := internalSaveFunction(c.Param("shortUrl"), requestBody.LongUrl, optionsConfig)
+	shortUrl := c.Param("shortUrl")
+	longUrl := requestBody.LongUrl
+
+	err := store.UpdateUrlMapping(shortUrl, longUrl)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	host := formatUrl(optionsConfig, shortUrl)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
